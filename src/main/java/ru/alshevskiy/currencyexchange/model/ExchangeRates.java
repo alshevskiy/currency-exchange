@@ -1,4 +1,4 @@
-package ru.alshevskiy.currencyexchange.model;
+package main.java.ru.alshevskiy.currencyexchange.model;
 
 public class ExchangeRates {
     int id;

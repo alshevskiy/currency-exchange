@@ -1,4 +1,4 @@
-package ru.alshevskiy.currencyexchange.servlets;
+package main.java.ru.alshevskiy.currencyexchange.servlets;
 
 import java.io.*;
 import jakarta.servlet.http.*;
