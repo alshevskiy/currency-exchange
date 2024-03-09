@@ -1,4 +1,4 @@
-package main.java.ru.alshevskiy.currencyexchange.util;
+package ru.alshevskiy.currencyExchange.util;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package main.java.ru.alshevskiy.currencyexchange.servlets;
+package ru.alshevskiy.currencyExchange.servlets;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
