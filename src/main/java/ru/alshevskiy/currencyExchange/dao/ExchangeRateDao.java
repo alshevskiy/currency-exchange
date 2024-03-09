@@ -33,7 +33,7 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
             """;
     private static final String SAVE_SQL = """
             INSERT INTO exchangeRates
-            VALUES (id = ?, base_currency_id = ?, target_currency_id= ?, rate = ?)
+            VALUES (base_currency_id = ?, target_currency_id= ?, rate = ?)
             """;
 
 
@@ -115,11 +115,14 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(SAVE_SQL)) {
 
-            statement.setLong(1, exchangeRate.getId());
             statement.setLong(2, exchangeRate.getBaseCurrencyId());
             statement.setLong(3, exchangeRate.getTargetCurrencyId());
             statement.setDouble(4, exchangeRate.getRate());
             statement.executeUpdate();
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                exchangeRate.setId(generatedKeys.getLong(1));
+            }
 
             return exchangeRate;
 
