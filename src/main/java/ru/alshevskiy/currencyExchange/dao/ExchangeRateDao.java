@@ -1,7 +1,7 @@
 package ru.alshevskiy.currencyExchange.dao;
 
-import ru.alshevskiy.currencyExchange.exseptions.DaoException;
-import ru.alshevskiy.currencyExchange.model.ExchangeRate;
+import ru.alshevskiy.currencyExchange.exseption.DaoException;
+import ru.alshevskiy.currencyExchange.entity.ExchangeRate;
 import ru.alshevskiy.currencyExchange.util.ConnectionManager;
 
 import java.sql.ResultSet;

@@ -1,7 +1,7 @@
 package ru.alshevskiy.currencyExchange.dao;
 
-import ru.alshevskiy.currencyExchange.exseptions.DaoException;
-import ru.alshevskiy.currencyExchange.model.Currency;
+import ru.alshevskiy.currencyExchange.exseption.DaoException;
+import ru.alshevskiy.currencyExchange.entity.Currency;
 import ru.alshevskiy.currencyExchange.util.ConnectionManager;
 
 import java.sql.ResultSet;
@@ -36,11 +36,11 @@ public class CurrencyDao implements Dao<Long, Currency> {
                                             SELECT id, code, full_name, sign
                                             FROM currencies
                                             """;
-    private static final String FIND_BY_CODE_SQL = """
-                                                SELECT id, code, full_name, sign
-                                                FROM currencies
-                                                WHERE code = '?'
-                                                """;
+    private static final String FIND_BY_CODE_SQL = FIND_ALL_SQL + "WHERE code = ?";
+
+
+    private CurrencyDao() {
+    }
 
     public static CurrencyDao getInstance() {
         return INSTANCE;

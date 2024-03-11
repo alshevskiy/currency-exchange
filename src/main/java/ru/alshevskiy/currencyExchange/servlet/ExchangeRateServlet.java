@@ -1,4 +1,4 @@
-package ru.alshevskiy.currencyExchange.servlets;
+package ru.alshevskiy.currencyExchange.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,13 +8,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-// добавить поддержку кодов валют
-@WebServlet("/currency/")
-public class CurrencyServlet extends HttpServlet {
+// add mapping
+@WebServlet("/exchangeRate/")
+public class ExchangeRateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // go to database
-        // return currency in json
+        // return json
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // go to database, update record
+        // return updated record
     }
 }

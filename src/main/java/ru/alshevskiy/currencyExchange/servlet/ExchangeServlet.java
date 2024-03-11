@@ -1,4 +1,4 @@
-package ru.alshevskiy.currencyExchange.servlets;
+package ru.alshevskiy.currencyExchange.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,20 +8,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/exchangeRates")
-public class ExchangeRatesServlet extends HttpServlet {
-
+@WebServlet("/exchange")
+public class ExchangeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // parsing
         // go to database
-        // return exchange rates list
+        // maybe calculation rate
+        // return exchange rate
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // add to database new exchange rate
-        // return new record in json format
-    }
-
-
 }

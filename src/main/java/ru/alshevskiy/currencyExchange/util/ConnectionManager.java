@@ -17,11 +17,30 @@ public final class ConnectionManager {
    private static List<Connection> sourceConnections;
 
    static {
+       loadDriver();
        initConnectionPool();
    }
 
-   private ConnectionManager() {
+    private ConnectionManager() {
    }
+
+    public static Connection get() {
+        try {
+            return pool.take();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void closePool() {
+        try {
+            for (Connection sourceConnection : sourceConnections) {
+                sourceConnection.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static void initConnectionPool() {
        var poolSize = PropertiesUtil.get(POOL_SIZE_KEY);
@@ -37,28 +56,18 @@ public final class ConnectionManager {
         }
     }
 
-    public static Connection get() {
+    private static Connection open() {
         try {
-            return pool.take();
-        } catch (InterruptedException e) {
+            return DriverManager.getConnection(PropertiesUtil.get(URL_KEY));
+        } catch (SQLException e ) {
             throw new RuntimeException(e);
         }
     }
 
-   private static Connection open() {
-       try {
-           return DriverManager.getConnection(PropertiesUtil.get(URL_KEY));
-       } catch (SQLException e) {
-           throw new RuntimeException(e);
-       }
-   }
-
-    public static void closePool() {
+    private static void loadDriver() {
         try {
-            for (Connection sourceConnection : sourceConnections) {
-                sourceConnection.close();
-            }
-        } catch (SQLException e) {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

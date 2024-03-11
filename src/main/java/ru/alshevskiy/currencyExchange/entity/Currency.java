@@ -1,4 +1,4 @@
-package ru.alshevskiy.currencyExchange.model;
+package ru.alshevskiy.currencyExchange.entity;
 
 import java.util.Objects;
 
@@ -65,11 +65,11 @@ public class Currency {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Currency currency = (Currency) o;
-        return Objects.equals(id, currency.id) && Objects.equals(code, currency.code) && Objects.equals(fullName, currency.fullName) && Objects.equals(sign, currency.sign);
+        return Objects.equals(id, currency.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, fullName, sign);
+        return Objects.hash(id);
     }
 }
