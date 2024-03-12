@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="currency-exchange-database" uuid="5fcf5f49-a2f2-4493-8aec-99744fd6860b">
-      <driver-ref>26f0e37f-e825-45e5-b5a4-5cf41e509306</driver-ref>
+      <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\JavaProjects\currency-exchange\src\main\resources\currency-exchange-database</jdbc-url>

@@ -23,7 +23,6 @@ public class CurrenciesServlet extends HttpServlet {
         resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         ObjectMapper objectMapper = new ObjectMapper();
-
         String json = objectMapper.writeValueAsString(currencyService.findAll());
 
         try (PrintWriter writer = resp.getWriter()) {
@@ -33,9 +32,15 @@ public class CurrenciesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // add new currency into database
-        // return new record in json view
+        String fullName = req.getParameter("name");
+        String code = req.getParameter("code");
+        String sign = req.getParameter("sign");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(currencyService.save(fullName, code, sign));
+
+        try (PrintWriter writer = resp.getWriter()) {
+            writer.write(json);
+        }
     }
 }
-
-
