@@ -1,6 +1,6 @@
 package ru.alshevskiy.currencyExchange.dao;
 
-import ru.alshevskiy.currencyExchange.exseption.DaoException;
+import ru.alshevskiy.currencyExchange.exception.DaoException;
 import ru.alshevskiy.currencyExchange.entity.ExchangeRate;
 import ru.alshevskiy.currencyExchange.util.ConnectionManager;
 
@@ -115,9 +115,9 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(SAVE_SQL)) {
 
-            statement.setLong(2, exchangeRate.getBaseCurrencyId());
-            statement.setLong(3, exchangeRate.getTargetCurrencyId());
-            statement.setDouble(4, exchangeRate.getRate());
+            statement.setLong(1, exchangeRate.getBaseCurrencyId());
+            statement.setLong(2, exchangeRate.getTargetCurrencyId());
+            statement.setDouble(3, exchangeRate.getRate());
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {

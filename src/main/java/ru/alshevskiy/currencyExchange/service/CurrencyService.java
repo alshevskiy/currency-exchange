@@ -5,8 +5,6 @@ import ru.alshevskiy.currencyExchange.dto.CurrencyDto;
 import ru.alshevskiy.currencyExchange.entity.Currency;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class CurrencyService {
     private static final CurrencyService INSTANCE = new CurrencyService();
@@ -21,39 +19,42 @@ public class CurrencyService {
     }
 
     public List<CurrencyDto> findAll() {
-        return currencyDao.findAll().stream()
-                .map(currency -> new CurrencyDto(
-                    currency.getId(),
-                    currency.getCode(),
-                    currency.getFullName(),
-                    currency.getSign()
-                ))
+        return currencyDao.findAll()
+                .stream()
+                .map(this::buildDto)
                 .toList();
     }
 
+    public CurrencyDto findById(Long id) {
+        return buildDto(
+                currencyDao.findById(id).orElseThrow());
+    }
+
     public CurrencyDto findByCode(String code) {
-        return currencyDao.findByCode(code).stream()
-                .map(currency -> new CurrencyDto(
-                        currency.getId(),
-                        currency.getCode(),
-                        currency.getFullName(),
-                        currency.getSign()
-                ))
-                .toList().get(0);
+        return buildDto(
+                currencyDao.findByCode(code).orElseThrow()
+        );
     }
 
     public CurrencyDto save(String fullName, String code, String sign) {
-
         Currency savedCurrency = currencyDao.save(
-                new Currency(null, code, fullName, sign));
+                new Currency(
+                        null,
+                        code,
+                        fullName,
+                        sign
+                )
+        );
 
-        return Optional.of(savedCurrency).stream()
-                .map(currency -> new CurrencyDto(
-                        currency.getId(),
-                        currency.getCode(),
-                        currency.getFullName(),
-                        currency.getSign()
-                ))
-                .toList().get(0);
+        return buildDto(savedCurrency);
+    }
+
+    private CurrencyDto buildDto(Currency currency) {
+        return new CurrencyDto(
+                currency.getId(),
+                currency.getCode(),
+                currency.getFullName(),
+                currency.getSign()
+        );
     }
 }

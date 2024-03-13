@@ -1,6 +1,6 @@
 package ru.alshevskiy.currencyExchange.dao;
 
-import ru.alshevskiy.currencyExchange.exseption.DaoException;
+import ru.alshevskiy.currencyExchange.exception.DaoException;
 import ru.alshevskiy.currencyExchange.entity.Currency;
 import ru.alshevskiy.currencyExchange.util.ConnectionManager;
 

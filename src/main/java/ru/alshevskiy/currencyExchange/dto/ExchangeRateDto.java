@@ -1,7 +1,7 @@
 package ru.alshevskiy.currencyExchange.dto;
 
 public record ExchangeRateDto(Long id,
-                              Long baseCurrencyId,
-                              Long targetCurrencyId,
+                              CurrencyDto baseCurrency,
+                              CurrencyDto targetCurrency,
                               Double rate) {
 }
