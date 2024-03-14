@@ -45,7 +45,6 @@ public class CurrencyService {
                         sign
                 )
         );
-
         return buildDto(savedCurrency);
     }
 

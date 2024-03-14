@@ -32,6 +32,15 @@ public class ExchangeRateService {
                 .toList();
     }
 
+    public ExchangeRateDto findByBaseAndTargetCurrencyCode(String baseCurrencyCode, String targetCurrencyCode) {
+        return buildDto(
+                exchangeRateDao.findByBaseAndTargetCurrencyId(
+                        currencyService.findByCode(baseCurrencyCode).id(),
+                        currencyService.findByCode(targetCurrencyCode).id()
+                ).orElseThrow()
+        );
+    }
+
     private ExchangeRateDto buildDto(ExchangeRate exchangeRate) {
         return new ExchangeRateDto(
                 exchangeRate.getId(),
@@ -39,5 +48,36 @@ public class ExchangeRateService {
                 currencyService.findById(exchangeRate.getTargetCurrencyId()),
                 exchangeRate.getRate()
         );
+    }
+
+    public ExchangeRateDto save(String baseCurrencyCode, String targetCurrencyCode, Double rate) {
+        ExchangeRate savedExchangeRate = exchangeRateDao.save(
+                new ExchangeRate(
+                        null,
+                        currencyService.findByCode(baseCurrencyCode).id(),
+                        currencyService.findByCode(targetCurrencyCode).id(),
+                        rate
+                )
+        );
+        return buildDto(savedExchangeRate);
+    }
+
+    public ExchangeRateDto updateByCurrencyPair(String currencyPair, Double rate) {
+        String baseCurrencyCode = currencyPair.substring(0, 3);
+        String targetCurrencyCode = currencyPair.substring(3);
+
+        Long baseCurrencyId = currencyService.findByCode(baseCurrencyCode).id();
+        Long targetCurrencyId = currencyService.findByCode(targetCurrencyCode).id();
+
+        ExchangeRate updatedExchangeRate = exchangeRateDao.updateByCurrencyPair(
+                new ExchangeRate(
+                        null,
+                        baseCurrencyId,
+                        targetCurrencyId,
+                        rate
+                )
+        );
+
+        return buildDto(updatedExchangeRate);
     }
 }

@@ -6,6 +6,7 @@ import ru.alshevskiy.currencyExchange.util.ConnectionManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,15 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
                                             SET rate = ?
                                             WHERE id = ?
                                             """;
+    private static final String SAVE_SQL = """
+            INSERT INTO exchangeRates (base_currency_id, target_currency_id, rate)
+            VALUES (?, ?, ?)
+            """;
+    private static final String UPDATE_BY_CURRENCY_PAIR_SQL = """
+            UPDATE exchangeRates
+            SET rate = ?
+            WHERE base_currency_id = ? AND target_currency_id = ?
+            """;
     private static final String FIND_ALL_SQL = """
             SELECT id, base_currency_id, target_currency_id, rate
             FROM exchangeRates
@@ -31,11 +41,11 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
             FROM exchangeRates
             WHERE id = ?
             """;
-    private static final String SAVE_SQL = """
-            INSERT INTO exchangeRates
-            VALUES (base_currency_id = ?, target_currency_id= ?, rate = ?)
+    private static final String FIND_BY_BASE_AND_TARGET_CURRENCY_ID = """
+            SELECT id, rate
+            FROM exchangeRates
+            WHERE base_currency_id = ? AND target_currency_id = ?
             """;
-
 
 
     public static ExchangeRateDao getInstance() {
@@ -66,6 +76,30 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
 
             return statement.executeUpdate() > 0;
 
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public ExchangeRate updateByCurrencyPair(ExchangeRate exchangeRate) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(UPDATE_BY_CURRENCY_PAIR_SQL)) {
+
+            statement.setDouble(1, exchangeRate.getRate());
+            statement.setLong(2, exchangeRate.getBaseCurrencyId());
+            statement.setLong(3, exchangeRate.getTargetCurrencyId());
+            int executedUpdate = statement.executeUpdate();
+
+            Long updatedExchangeRateId = findByBaseAndTargetCurrencyId(
+                    exchangeRate.getBaseCurrencyId(),
+                    exchangeRate.getTargetCurrencyId()
+            ).orElseThrow().getId();
+
+            if (executedUpdate > 0) {
+                exchangeRate.setId(updatedExchangeRateId);
+            }
+
+            return exchangeRate;
         } catch (SQLException e) {
             throw new DaoException(e);
         }
@@ -113,7 +147,7 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
     @Override
     public ExchangeRate save(ExchangeRate exchangeRate) {
         try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(SAVE_SQL)) {
+             var statement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setLong(1, exchangeRate.getBaseCurrencyId());
             statement.setLong(2, exchangeRate.getTargetCurrencyId());
@@ -125,6 +159,31 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
             }
 
             return exchangeRate;
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public Optional<ExchangeRate> findByBaseAndTargetCurrencyId(Long baseCurrencyId, Long targetCurrencyId) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_BY_BASE_AND_TARGET_CURRENCY_ID)) {
+
+            ExchangeRate exchangeRate = null;
+
+            statement.setLong(1, baseCurrencyId);
+            statement.setLong(2, targetCurrencyId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                exchangeRate = new ExchangeRate(
+                        resultSet.getLong("id"),
+                        baseCurrencyId,
+                        targetCurrencyId,
+                        resultSet.getDouble("rate")
+                );
+            }
+
+            return Optional.ofNullable(exchangeRate);
 
         } catch (SQLException e) {
             throw new DaoException(e);
