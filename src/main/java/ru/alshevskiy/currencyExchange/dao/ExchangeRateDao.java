@@ -7,9 +7,7 @@ import ru.alshevskiy.currencyExchange.util.ConnectionManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
     private static final ExchangeRateDao INSTANCE = new ExchangeRateDao();
@@ -41,8 +39,8 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
             FROM exchangeRates
             WHERE id = ?
             """;
-    private static final String FIND_BY_BASE_AND_TARGET_CURRENCY_ID = """
-            SELECT id, rate
+    private static final String FIND_RATE_BY_BASE_AND_TARGET_CURRENCY_ID_SQL = """
+            SELECT rate
             FROM exchangeRates
             WHERE base_currency_id = ? AND target_currency_id = ?
             """;
@@ -167,7 +165,7 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
 
     public Optional<ExchangeRate> findByBaseAndTargetCurrencyId(Long baseCurrencyId, Long targetCurrencyId) {
         try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(FIND_BY_BASE_AND_TARGET_CURRENCY_ID)) {
+             var statement = connection.prepareStatement(FIND_RATE_BY_BASE_AND_TARGET_CURRENCY_ID_SQL)) {
 
             ExchangeRate exchangeRate = null;
 
@@ -184,6 +182,54 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
             }
 
             return Optional.ofNullable(exchangeRate);
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public Double getRate(Long baseCurrencyId, Long targetCurrencyId, Long usdId) {
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(FIND_RATE_BY_BASE_AND_TARGET_CURRENCY_ID_SQL)) {
+
+            statement.setLong(1, baseCurrencyId);
+            statement.setLong(2, targetCurrencyId);
+            ResultSet resultSet1 = statement.executeQuery();
+            if (resultSet1.next()) {
+                return resultSet1.getDouble("rate");
+            }
+
+            statement.setLong(1, targetCurrencyId);
+            statement.setLong(2, baseCurrencyId);
+            ResultSet resultSet2 = statement.executeQuery();
+            if (resultSet2.next()) {
+                double reverseRate = resultSet2.getDouble("rate");
+                return 1 / reverseRate;
+
+            }
+
+            double firstRate = 0;
+            double secondRate = 0;
+
+            statement.setLong(1, usdId);
+            statement.setLong(2, baseCurrencyId);
+            ResultSet resultSet3 = statement.executeQuery();
+            if (resultSet3.next()) {
+                firstRate = resultSet3.getDouble("rate");
+            }
+
+            statement.setLong(1, usdId);
+            statement.setLong(2, targetCurrencyId);
+            ResultSet resultSet4 = statement.executeQuery();
+            if (resultSet4.next()) {
+                secondRate = resultSet4.getDouble("rate");
+            }
+
+            if (firstRate != 0 && secondRate != 0) {
+                return firstRate / secondRate;
+            }
+
+            return (double) 0;
 
         } catch (SQLException e) {
             throw new DaoException(e);

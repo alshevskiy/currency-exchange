@@ -41,15 +41,6 @@ public class ExchangeRateService {
         );
     }
 
-    private ExchangeRateDto buildDto(ExchangeRate exchangeRate) {
-        return new ExchangeRateDto(
-                exchangeRate.getId(),
-                currencyService.findById(exchangeRate.getBaseCurrencyId()),
-                currencyService.findById(exchangeRate.getTargetCurrencyId()),
-                exchangeRate.getRate()
-        );
-    }
-
     public ExchangeRateDto save(String baseCurrencyCode, String targetCurrencyCode, Double rate) {
         ExchangeRate savedExchangeRate = exchangeRateDao.save(
                 new ExchangeRate(
@@ -77,7 +68,16 @@ public class ExchangeRateService {
                         rate
                 )
         );
-
         return buildDto(updatedExchangeRate);
     }
+
+    private ExchangeRateDto buildDto(ExchangeRate exchangeRate) {
+        return new ExchangeRateDto(
+                exchangeRate.getId(),
+                currencyService.findById(exchangeRate.getBaseCurrencyId()),
+                currencyService.findById(exchangeRate.getTargetCurrencyId()),
+                exchangeRate.getRate()
+        );
+    }
+
 }
