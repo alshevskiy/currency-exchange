@@ -40,7 +40,7 @@ public class ExchangeRateDao implements Dao<Long, ExchangeRate> {
             WHERE id = ?
             """;
     private static final String FIND_RATE_BY_BASE_AND_TARGET_CURRENCY_ID_SQL = """
-            SELECT rate
+            SELECT id, rate
             FROM exchangeRates
             WHERE base_currency_id = ? AND target_currency_id = ?
             """;

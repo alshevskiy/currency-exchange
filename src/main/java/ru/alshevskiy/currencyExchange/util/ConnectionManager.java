@@ -10,7 +10,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public final class ConnectionManager {
-   public static final String URL_KEY = "db.url.for.windows";
+   public static final String URL_KEY = "db.url";
    public static final String POOL_SIZE_KEY = "db.pool.size";
    public static final Integer DEFAULT_POOL_SIZE = 10;
    private static BlockingQueue<Connection> pool;
