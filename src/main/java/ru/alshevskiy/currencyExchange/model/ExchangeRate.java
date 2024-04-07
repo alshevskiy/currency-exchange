@@ -1,17 +1,18 @@
-package ru.alshevskiy.currencyExchange.entity;
+package ru.alshevskiy.currencyExchange.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ExchangeRate {
     private Long id;
     private Long baseCurrencyId;
     private Long targetCurrencyId;
-    private Double rate;
+    private BigDecimal rate;
 
     public ExchangeRate() {
     }
 
-    public ExchangeRate(Long id, Long baseCurrencyId, Long targetCurrencyId, Double rate) {
+    public ExchangeRate(Long id, Long baseCurrencyId, Long targetCurrencyId, BigDecimal rate) {
         this.id = id;
         this.baseCurrencyId = baseCurrencyId;
         this.targetCurrencyId = targetCurrencyId;
@@ -42,11 +43,11 @@ public class ExchangeRate {
         this.targetCurrencyId = targetCurrencyId;
     }
 
-    public Double getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 
-    public void setRate(Double rate) {
+    public void setRate(BigDecimal rate) {
         this.rate = rate;
     }
 

@@ -25,6 +25,4 @@ public final class PropertiesUtil {
             throw new RuntimeException(e);
         }
     }
-
-
 }

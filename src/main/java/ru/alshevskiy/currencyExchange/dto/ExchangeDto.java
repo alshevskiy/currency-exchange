@@ -1,6 +1,6 @@
 package ru.alshevskiy.currencyExchange.dto;
 
-import ru.alshevskiy.currencyExchange.entity.Currency;
+import ru.alshevskiy.currencyExchange.model.Currency;
 
 public record ExchangeDto(Currency baseCurrency,
                           Currency targetCurrency,

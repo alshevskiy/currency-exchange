@@ -1,7 +1,11 @@
 package ru.alshevskiy.currencyExchange.dto;
 
+import ru.alshevskiy.currencyExchange.model.Currency;
+
+import java.math.BigDecimal;
+
 public record ExchangeRateDto(Long id,
-                              CurrencyDto baseCurrency,
-                              CurrencyDto targetCurrency,
-                              Double rate) {
+                              Currency baseCurrency,
+                              Currency targetCurrency,
+                              BigDecimal rate) {
 }

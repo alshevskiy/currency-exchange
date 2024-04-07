@@ -1,15 +1,18 @@
 package ru.alshevskiy.currencyExchange.service;
 
-import ru.alshevskiy.currencyExchange.dao.CurrencyDao;
-import ru.alshevskiy.currencyExchange.dto.CurrencyDto;
-import ru.alshevskiy.currencyExchange.entity.Currency;
+import ru.alshevskiy.currencyExchange.exception.ElementNotFoundException;
+import ru.alshevskiy.currencyExchange.repository.CurrencyRepository;
+import ru.alshevskiy.currencyExchange.repository.JdbcCurrencyRepository;
+import ru.alshevskiy.currencyExchange.model.Currency;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class CurrencyService {
     private static final CurrencyService INSTANCE = new CurrencyService();
 
-    private final CurrencyDao currencyDao = CurrencyDao.getInstance();
+    private final CurrencyRepository currencyRepository = JdbcCurrencyRepository.getInstance();
 
     private CurrencyService() {
     }
@@ -18,42 +21,29 @@ public class CurrencyService {
         return INSTANCE;
     }
 
-    public List<CurrencyDto> findAll() {
-        return currencyDao.findAll()
-                .stream()
-                .map(this::buildDto)
-                .toList();
+    public List<Currency> findAll() throws SQLException {
+        return currencyRepository.findAll();
     }
 
-    public CurrencyDto findById(Long id) {
-        return buildDto(
-                currencyDao.findById(id).orElseThrow());
+    public Currency findById(Long id) throws SQLException, ElementNotFoundException {
+        Optional<Currency> optionalCurrency = currencyRepository.findById(id);
+        if (optionalCurrency.isEmpty()) {
+            throw new ElementNotFoundException("Валюта не найдена");
+        }
+        return optionalCurrency.get();
     }
 
-    public CurrencyDto findByCode(String code) {
-        return buildDto(
-                currencyDao.findByCode(code).orElseThrow()
-        );
+    public Currency findByCode(String code) throws SQLException, ElementNotFoundException {
+        Optional<Currency> optionalCurrency = currencyRepository.findByCode(code);
+        if (optionalCurrency.isEmpty()) {
+            throw new ElementNotFoundException("Валюта не найдена");
+        }
+
+        return optionalCurrency.get();
     }
 
-    public CurrencyDto save(String fullName, String code, String sign) {
-        Currency savedCurrency = currencyDao.save(
-                new Currency(
-                        null,
-                        code,
-                        fullName,
-                        sign
-                )
-        );
-        return buildDto(savedCurrency);
-    }
-
-    private CurrencyDto buildDto(Currency currency) {
-        return new CurrencyDto(
-                currency.getId(),
-                currency.getCode(),
-                currency.getFullName(),
-                currency.getSign()
-        );
+    public Long save(String fullName, String code, String sign) throws SQLException {
+        Currency newCurrency = new Currency(null, code, fullName, sign);
+        return currencyRepository.save(newCurrency);
     }
 }

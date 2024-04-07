@@ -1,20 +1,20 @@
-package ru.alshevskiy.currencyExchange.entity;
+package ru.alshevskiy.currencyExchange.model;
 
 import java.util.Objects;
 
 public class Currency {
     Long id;
     String code;
-    String fullName;
+    String name;
     String sign;
 
     public Currency() {
     }
 
-    public Currency(Long id, String code, String fullName, String sign) {
+    public Currency(Long id, String code, String name, String sign) {
         this.id = id;
         this.code = code;
-        this.fullName = fullName;
+        this.name = name;
         this.sign = sign;
     }
 
@@ -34,12 +34,12 @@ public class Currency {
         this.code = code;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSign() {
@@ -55,7 +55,7 @@ public class Currency {
         return "Currencies{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
-                ", fullName='" + fullName + '\'' +
+                ", fullName='" + name + '\'' +
                 ", sign='" + sign + '\'' +
                 '}';
     }
